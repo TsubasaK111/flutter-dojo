@@ -1,4 +1,5 @@
 import 'package:flare_flutter/flare_actor.dart';
+import 'package:flare_flutter/flare_controls.dart';
 import 'package:flutter/cupertino.dart';
 
 enum AnimationToPlay {
@@ -8,7 +9,6 @@ enum AnimationToPlay {
   Stats,
   Photo
 }
-
 
 String _getAnimationName(AnimationToPlay animationToPlay){
   switch(animationToPlay){
@@ -32,15 +32,17 @@ class SmartFlareAnimation extends StatefulWidget {
 }
 
 class _SmartFlareAnimationState extends State<SmartFlareAnimation> {
-  AnimationToPlay _animationToPlay = AnimationToPlay.Deactivate;
   static const double AnimationWidth = 295;
   static const double AnimationHeight = 251;
+  // create flare controls
+  final FlareControls animationControls = FlareControls();
   bool isOpen = false;
+  AnimationToPlay _lastPlayedAnimation;
 
   void _setAnimationToPlay(AnimationToPlay animation) {
-    setState(() {
-      _animationToPlay = animation;
-    });
+    animationControls.play(_getAnimationName(animation));
+
+    _lastPlayedAnimation = animation;
   }
 
   @override
@@ -82,7 +84,8 @@ class _SmartFlareAnimationState extends State<SmartFlareAnimation> {
         },
         child: FlareActor(
           'assets/button-animation.flr',
-          animation: _getAnimationName(_animationToPlay),
+          controller: animationControls,
+          animation: 'deactivate',
         )
       )
     );
